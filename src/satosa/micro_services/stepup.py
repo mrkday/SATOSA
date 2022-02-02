@@ -16,7 +16,6 @@ from urllib.parse import urlparse
 
 from saml2 import BINDING_HTTP_POST
 import saml2.xmldsig as ds
-from saml2.authn_context import requested_authn_context
 from saml2.client import Saml2Client
 from saml2.config import SPConfig
 from saml2.metadata import create_metadata_string
@@ -228,7 +227,8 @@ class StepUp(ResponseMicroService):
         self, context, internal_response, authn_context, nameid_value
     ):
         entityid = self.sp.metadata.identity_providers()[0]
-        req_authn_context = dict(authn_context_class_ref=[authn_context], comparison="exact")
+        req_authn_context = dict(authn_context_class_ref=[authn_context],
+                                 comparison="exact")
         relay_state = util.rndstr()
         sign = self.sp.config.getattr("authn_requests_signed") or bool(
             self.sp.config.key_file and self.sp.config.cert_file
